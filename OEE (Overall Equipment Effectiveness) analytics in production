@@ -1,0 +1,77 @@
+This view is a composite CDS view that aggregates and normalizes OEE-related time measures for production orders. 
+It converts various time measures (like setup time, production time, recovery time) into hours, so they can be used consistently for reporting, analytics, and dashboards.
+
+-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+
+@AbapCatalog.sqlViewName: 'ZLPCDSOEEAGG1'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'LP.OEE Composite (Aggregation 1)'
+
+@ClientHandling.type: #CLIENT_DEPENDENT 
+@ClientHandling.algorithm: #AUTOMATED
+
+@Analytics.dataCategory: #CUBE
+@VDM.viewType: #COMPOSITE
+
+define view ZLP_OEE_COMP_AGG1 as select from ZLP_CDS_PP_OEE_COMP_BASIC {
+aufnr,
+vornr,
+werks,
+rueck,
+arbid,
+objid,
+arbpl,
+budat,
+ism01,
+ile01,
+ism02,
+ile02,
+ism05,
+ile05,
+lmnga,
+xmnga,
+rmnga,
+case 
+when ile01 = 'MIN' then
+division(ism01,60,3)
+when ile01 = 'S' then
+division(ism01,3600,3)
+when ile01 = 'HR'then
+ism01 
+else ism01
+end as Setup_hr,
+
+case 
+when ile02 = 'MIN' then
+division(ism02,60,3)
+when ile02 = 'S' then
+division(ism02,3600,3)
+when ile02 = 'HR'then
+ism02 
+else ism02
+end as Prod_hr,
+
+case 
+when ile05 = 'MIN' then
+division(ism05,60,3)
+when ile05 = 'S' then
+division(ism05,3600,3)
+when ile05 = 'HR'then
+ism05 
+else ism05
+end as Recovery_hr,
+
+case 
+when ile01 = 'MIN' or ile02 = 'MIN' then
+division(ism0102,60,3)
+when ile01 = 'S' or ile02 = 'S' then
+division(ism0102,3600,3)
+when ile01 = 'S' or ile02 = 'S' then
+ism0102 
+else ism0102
+end as Avail_hr
+
+}
+
