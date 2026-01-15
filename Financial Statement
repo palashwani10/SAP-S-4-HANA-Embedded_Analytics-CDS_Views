@@ -1,0 +1,472 @@
+@AbapCatalog.sqlViewName: 'ZCNR2RGLVM001'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@VDM.viewType: #CONSUMPTION
+@Analytics.query:true 
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Financial Statement'
+
+define view ZCN_R2R_GL_BLS001
+  with parameters
+
+ 
+
+    //@Consumption.hidden: true
+    //@Environment.systemField: #SYSTEM_DATE
+    P_KeyDate                    : sydatum,
+
+ 
+
+    @Consumption.hidden: true
+    //@Environment.systemField: #SYSTEM_LANGUAGE
+    P_Language                   : sylangu,
+
+ 
+
+    @Consumption.hidden: true
+//    @Environment.systemField: #APPLICATION_USER
+    //@Environment.systemField: #USER
+    P_BusinessUser               : syuname,
+
+ 
+
+    /*@Consumption.derivation: { lookupEntity: 'I_Ledger',
+      resultElement: 'Ledger',
+      binding:
+      [ { targetElement : 'IsLeadingLedger' ,
+          type : #CONSTANT,
+          value : 'X'
+        }
+      ]
+    }*/
+    //@AnalyticsDetails.query.variableSequence: 10
+    //@Consumption.valueHelp: '_Ledger'
+    P_Ledger                     : fins_ledger,
+
+ 
+
+
+    /*@AnalyticsDetails.query.variableSequence: 20
+    @Consumption.hidden: false
+    @Consumption.valueHelp: '_FinancialStatementHier'
+    @Consumption.derivation: { lookupEntity: 'F_FinStmntVersionUserParam',
+          resultElement: 'FinancialStatementHierarchy' }*/
+    P_FinancialStatementVersion  : hryid,
+
+ 
+
+    ------------------------------------------------------------------------------------------------------
+    -- Time Parameters
+    ------------------------------------------------------------------------------------------------------
+    //@AnalyticsDetails.query.variableSequence: 30
+    //@Consumption.hidden: false
+    //@Consumption.defaultValue: '000'
+    P_FromFiscalPeriod           : fis_period_from,
+
+ 
+
+    /*@AnalyticsDetails.query.variableSequence: 31
+    @Consumption.hidden: false
+    @Consumption.derivation: { lookupEntity: 'I_CalendarDate',
+          resultElement: 'CalendarMonth', binding: [
+          { targetElement : 'CalendarDate' , type : #PARAMETER, value : 'P_KeyDate' } ]
+         }*/
+    P_ToFiscalPeriod             : fis_period_to,
+
+ 
+
+    /*@AnalyticsDetails.query.variableSequence: 32
+
+    @Consumption.hidden: false
+    @Consumption.derivation: { lookupEntity: 'I_CalendarDate',
+          resultElement: 'CalendarYear', binding: [
+          { targetElement : 'CalendarDate' , type : #PARAMETER, value : 'P_KeyDate' } ]
+         }*/
+    P_FiscalYear                 : fis_gjahr_no_conv,
+
+ 
+
+    ------------------------------------------------------------------------------------------------------
+    -- Time Comparison Parameters
+    ------------------------------------------------------------------------------------------------------
+    /*@Consumption.derivation: { lookupEntity: 'I_Ledger',
+      resultElement: 'Ledger',
+      binding:
+      [ { targetElement : 'IsLeadingLedger' ,
+          type : #CONSTANT,
+          value : 'X'
+        }
+      ]
+    }
+    @Consumption.hidden: false
+    @Consumption.valueHelp: '_ComparisonLedger'
+    @AnalyticsDetails.query.variableSequence: 40*/
+    P_ComparisonLedger           : fis_ledger_cmp,
+
+ 
+
+    /*@AnalyticsDetails.query.variableSequence: 41
+    @Consumption.hidden: false
+    @Consumption.defaultValue: '000'*/
+    P_FromComparisonFiscalPeriod : fis_period_from_cmp,
+
+ 
+
+    /*@AnalyticsDetails.query.variableSequence: 42
+    @Consumption.hidden: false
+    @Consumption.derivation: { lookupEntity: 'I_CalendarDate',
+          resultElement: 'CalendarMonth', binding: [
+          { targetElement : 'CalendarDate' , type : #PARAMETER, value : 'P_KeyDate' } ]
+         }*/
+
+ 
+
+    P_ToComparisonFiscalPeriod   : fis_period_to_cmp,
+   // @AnalyticsDetails.query.variableSequence: 43
+    //    @EndUserText.label: 'Comparison Fiscal Year'
+    /*@Consumption.hidden: false
+    @Consumption.derivation: { lookupEntity: 'I_CalendarDate',
+        resultElement: 'CalendarYear', binding: [
+        { targetElement : 'CalendarDate' , type : #PARAMETER, value : 'P_KeyDate' } ]
+       }*/
+    P_ComparisonFiscalYear       : fis_gjahr_cmp_no_conv,
+
+ 
+
+    ------------------------------------------------------------------------------------------------------
+    -- Other Parameters
+    ------------------------------------------------------------------------------------------------------
+    //@AnalyticsDetails.query.variableSequence: 50
+    //@Consumption.hidden: false
+
+    //@Consumption.valueHelpDefinition: [{
+         //entity: { name:    'C_BalanceSheetCurrencyRoleVH', element: 'CurrencyRole' },
+         // additionalBinding: [{ localParameter: 'P_Ledger', element: 'Ledger' }, 
+           //                  { localElement: 'CompanyCode', element: 'CompanyCode' } ]
+
+              //  }]
+//    @Consumption.valueHelp: '_CurrencyRole' 
+    //@Consumption.defaultValue: '10'
+
+
+    P_CurrencyRole               : fins_curtp,
+
+ 
+
+    /*@AnalyticsDetails.query.variableSequence: 60
+    @Consumption.hidden: false
+    @Consumption.valueHelp: '_PlanningCategory'
+    @Consumption.defaultValue: 'ACT01'*/
+    P_PlanningCategory           : fcom_category,
+
+ 
+
+    /*@Consumption.derivation: {
+      lookupEntity: 'I_FiscalPeriodValueList',
+      resultElement: 'FiscalPeriod',
+      binding: [ { targetElement: 'FiscalPeriod', type : #PARAMETER, value: 'P_FromFiscalPeriod' } ]
+    }*/
+    @Consumption.hidden: true
+    P_Interval1FromFiscalPeriod : fis_period_from,
+
+    /*@Consumption.derivation: {
+      lookupEntity: 'I_FiscalPeriodValueList',
+      resultElement: 'FiscalPeriod',
+      binding: [ { targetElement: 'FiscalPeriod', type : #PARAMETER, value: 'P_ToFiscalPeriod' } ]
+    }*/
+    @Consumption.hidden: true
+    P_Interval1ToFiscalPeriod : fis_period_to,
+
+    /*@Consumption.derivation: {
+      lookupEntity: 'I_FiscalPeriodValueList',
+      resultElement: 'FiscalPeriod',
+      binding: [ { targetElement: 'FiscalPeriod', type : #PARAMETER, value: 'P_FromComparisonFiscalPeriod' } ]
+    }*/
+    @Consumption.hidden: true
+    P_Interval2FromFiscalPeriod : fis_period_from,
+
+    /*@Consumption.derivation: {
+      lookupEntity: 'I_FiscalPeriodValueList',
+      resultElement: 'FiscalPeriod',
+      binding: [ { targetElement: 'FiscalPeriod', type : #PARAMETER, value: 'P_ToComparisonFiscalPeriod' } ]
+    }*/
+    @Consumption.hidden: true
+
+    P_Interval2ToFiscalPeriod : fis_period_to,
+
+    //@AnalyticsDetails.query.variableSequence: 70
+    //@Consumption.hidden: false
+    //@Consumption.valueHelp: 'abap.dats'
+    //@Consumption.defaultValue: '20230628'
+   // P_TransDate                  : abap.dats,
+    @EndUserText.label: 'TransalationCurrency'
+    //@AnalyticsDetails.query.variableSequence: 75
+    //@Consumption.hidden: false
+    //@Consumption.valueHelp: 'fis_curr2'
+    P_TarCurrency             : abap.cuky( 5 ),
+    @EndUserText.label: 'ExchangeRate'
+    //@AnalyticsDetails.query.variableSequence: 80
+    //@Consumption.hidden: false
+    //@Consumption.valueHelp: 'abap.char'
+    P_EXRate               : abap.char( 1 ) 
+
+  as select from ZCC_R2R_GL_BLS001 (P_FinancialStatementVersion  :$parameters.P_FinancialStatementVersion,
+    P_FromFiscalPeriod           : $parameters.P_FromFiscalPeriod,
+    P_ToFiscalPeriod             : $parameters.P_ToFiscalPeriod,
+    P_FiscalYear                 : $parameters.P_FiscalYear,
+    P_FromComparisonFiscalPeriod : $parameters.P_FromComparisonFiscalPeriod,
+    P_ToComparisonFiscalPeriod   : $parameters.P_ToComparisonFiscalPeriod,
+    P_ComparisonFiscalYear       : $parameters.P_ComparisonFiscalYear,
+    P_Ledger                     : $parameters.P_Ledger,
+    P_ComparisonLedger           : $parameters.P_ComparisonLedger,
+    P_CurrencyRole               : $parameters.P_CurrencyRole,
+    P_PlanningCategory           : $parameters.P_PlanningCategory,
+    P_KeyDate                    : $parameters.P_KeyDate,
+    P_TarCurrency                : $parameters.P_TarCurrency,
+    P_ExRate                     : $parameters.P_EXRate 
+                 ) as ZCC_R2R_GL_BLS001
+
+ 
+
+  //association [0..1] to I_FinancialStatementHier as _FinancialStatementHier on _FinancialStatementHier.FinancialStatementHierarchy = :P_FinancialStatementVersion
+//  association [0..1] to I_FinancialStatementHier as _FinancialStatementHier on _FinancialStatementHier.FinancialStatementHierarchy = $projection.FinancialStatementLeafItem
+  //association [0..1] to I_CurrencyRole           as _CurrencyRole           on _CurrencyRole.CurrencyRole                          = :P_CurrencyRole
+  //association [0..1] to I_PlanningCategory       as _PlanningCategory       on _PlanningCategory.PlanningCategory                  = :P_PlanningCategory
+  //association [0..1] to I_Ledger                 as _Ledger                 on _Ledger.Ledger                                      = :P_Ledger
+  //association [0..1] to I_Ledger                 as _ComparisonLedger       on _ComparisonLedger.Ledger                            = :P_ComparisonLedger
+
+ 
+
+{
+  ------------------------------------------------------------------------------------------------------
+  -- ROWS
+  ------------------------------------------------------------------------------------------------------
+  /*@Consumption.filter: {  selectionType: #HIERARCHY_NODE, multipleSelections: true, mandatory: false,
+                          hierarchyBinding : [{type : #PARAMETER, value : 'P_FinancialStatementVersion', variableSequence: 80 } ] }
+  @AnalyticsDetails.query.displayHierarchy: #FILTER_ONLY*/
+  @AnalyticsDetails.query.axis: #ROWS
+  @AnalyticsDetails.query.totals: #HIDE
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  FinancialStatementLeafItem,
+
+
+
+
+ 
+
+  ------------------------------------------------------------------------------------------------------
+  -- FREE
+  ------------------------------------------------------------------------------------------------------
+  @AnalyticsDetails.query.axis: #FREE
+  @Consumption.filter: { selectionType: #SINGLE, multipleSelections: true, mandatory: true}
+  /*@Consumption.derivation: {
+      lookupEntity: 'I_UserSettingsForCompanyCode',
+      resultElement: 'CompanyCode',
+      binding:
+      [
+        {
+          targetElement : 'BusinessUser' ,
+          type : #PARAMETER,
+          value : 'P_BusinessUser'
+        }
+      ]
+    }*/
+  @AnalyticsDetails.query.variableSequence: 15
+  @AnalyticsDetails.query.totals: #SHOW
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  CompanyCode,
+
+ 
+
+  @AnalyticsDetails.query.variableSequence: 80
+  @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: true, mandatory: false }
+  @AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.totals: #SHOW
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  GLAccount,
+
+ 
+
+  @AnalyticsDetails.query.variableSequence: 90
+  @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: true, mandatory: false }
+  @AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.totals: #SHOW
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  ProfitCenter,
+
+ 
+
+  @AnalyticsDetails.query.variableSequence: 100
+  @Consumption.filter: { selectionType: #INTERVAL, multipleSelections: true, mandatory: false }
+  @AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.totals: #SHOW
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  Segment,
+
+ 
+
+  @AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  ChartOfAccounts,
+
+ 
+
+  @AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  FunctionalArea,
+
+ 
+
+  @AnalyticsDetails.query.hidden: true
+  @AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.totals: #SHOW
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  ControllingArea,
+
+ 
+
+  @AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.totals: #SHOW
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  AlternativeGLAccount,
+
+ 
+
+  @AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.totals: #SHOW
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  CountryChartOfAccounts,
+
+ 
+
+  /*@AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.totals: #SHOW
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  CorporateGroupAccount,*/
+
+  @AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.totals: #SHOW
+  @AnalyticsDetails.query.display: #KEY_TEXT
+  CorporateGroupChartOfAccounts,
+
+ 
+
+  @AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.totals: #SHOW
+
+  Currency,
+
+ 
+
+  @AnalyticsDetails.query.hidden: true
+  @Consumption.hidden: true
+  @AnalyticsDetails.query.variableSequence: 110
+  @Consumption.filter: { selectionType: #SINGLE, multipleSelections: false, mandatory: false }
+  AlternativeGLAccountIsUsed,
+  ------------------------------------------------------------------------------------------------------
+  -- MEASURES
+  ------------------------------------------------------------------------------------------------------
+  //@Consumption.dynamicLabel: { label: 'Period Balance &1 - &3.&4', binding: [ { index: 1, parameter: 'P_Interval1FromFiscalPeriod'}, 
+//                                                                              { index: 2, parameter: 'P_FiscalYear'},
+   //                                                                           { index: 3, parameter: 'P_Interval1ToFiscalPeriod'},
+     //                                                                         { index: 4, parameter: 'P_FiscalYear'} ] }
+  PeriodBalanceAmount,
+
+ 
+
+  //@Consumption.dynamicLabel: { label: 'Comparison Period Balance &1 - &3.&4', binding: [ { index: 1, parameter: 'P_Interval2FromFiscalPeriod'}, 
+//                                                                                 { index: 2, parameter: 'P_FiscalYear'},
+   //                                                                              { index: 3, parameter: 'P_Interval2ToFiscalPeriod'},
+    //                                                                             { index: 4, parameter: 'P_ComparisonFiscalYear'} ] }
+  ComparisonPeriodBalanceAmount,
+
+ 
+
+  @DefaultAggregation: #FORMULA
+  @AnalyticsDetails.query.formula: '$projection.PeriodBalanceAmount - $projection.ComparisonPeriodBalanceAmount'
+  cast (1 as fis_abs_diff) as AbsoluteDifferenceAmount,
+
+ 
+
+  @DefaultAggregation: #FORMULA
+  @AnalyticsDetails.query.formula: 'NDIV0($projection.AbsoluteDifferenceAmount / $projection.ComparisonPeriodBalanceAmount) * 100'
+  cast (1 as fis_rel_diff) as RelativeDifferenceAmount,
+
+ 
+
+  @AnalyticsDetails.query.axis: #FREE
+  @AnalyticsDetails.query.totals: #SHOW
+  @AnalyticsDetails.query.display: #KEY
+  GLAccountHierarchyKeyDate,
+
+  @AnalyticsDetails.query.hidden: true
+  @Consumption.hidden: true
+  @AnalyticsDetails.query.variableSequence: 120
+  @Consumption.filter: { selectionType: #SINGLE, multipleSelections: false, mandatory: false }
+  ZeroBalanceAccountIsDisplayed,
+
+  @DefaultAggregation: #FORMULA
+  @AnalyticsDetails.query.hidden: true
+  @AnalyticsDetails.query.formula: 'HRY_NODE_SIGN_VALUE($projection.FinancialStatementLeafItem) * $projection.PeriodBalanceAmount'
+  @Semantics.amount.currencyCode: 'Currency'
+  //@Consumption.dynamicLabel: { label: 'Period Balance Sign Adjusted &1 - &3.&4', binding: [ { index: 1, parameter: 'P_Interval1FromFiscalPeriod'}, 
+//                                                                                 { index: 2, parameter: 'P_FiscalYear'},
+  //                                                                               { index: 3, parameter: 'P_Interval1ToFiscalPeriod'},
+   //                                                                              { index: 4, parameter: 'P_FiscalYear'} ] }
+  cast ( 1 as fis_fsv_sa_repo_amount ) as PeriodBalanceSignAdjdAmount,
+
+ 
+
+  @DefaultAggregation: #FORMULA
+  @AnalyticsDetails.query.hidden: true
+  @AnalyticsDetails.query.formula: 'HRY_NODE_SIGN_VALUE($projection.FinancialStatementLeafItem) * $projection.ComparisonPeriodBalanceAmount'
+  @Semantics.amount.currencyCode: 'Currency'
+  //@Consumption.dynamicLabel: { label: 'Comparison Balance Sign Adjd &1 - &3.&4', binding: [ { index: 1, parameter: 'P_Interval2FromFiscalPeriod'}, 
+//                                                                                 { index: 2, parameter: 'P_FiscalYear'},
+    //                                                                             { index: 3, parameter: 'P_Interval2ToFiscalPeriod'},
+     //                                                                            { index: 4, parameter: 'P_ComparisonFiscalYear'} ] }
+  cast ( 1 as fis_fsv_sa_comp_amount ) as ComprnPeriodBalSignAdjdAmount,
+
+ 
+
+  @DefaultAggregation: #FORMULA
+  @AnalyticsDetails.query.hidden: true
+  @AnalyticsDetails.query.formula: 'HRY_NODE_SIGN_VALUE($projection.FinancialStatementLeafItem) * $projection.AbsoluteDifferenceAmount'
+  cast ( 1 as fis_fsv_sa_abs_diff ) as AbsltDifferenceSignAdjdAmount,
+
+ 
+
+  @DefaultAggregation: #FORMULA
+  @AnalyticsDetails.query.hidden: true
+  @AnalyticsDetails.query.formula: 'HRY_NODE_SIGN_VALUE($projection.FinancialStatementLeafItem) * $projection.RelativeDifferenceAmount'
+  cast ( 1 as fis_fsv_sa_rel_diff ) as RelativeDifferenceSignAdjdAmt,
+
+  @AnalyticsDetails.query.totals: #SHOW
+  @AnalyticsDetails.query.axis: #ROWS
+  ConsolidationGroupAccount,
+
+
+   currency_conversion(
+        amount             => PeriodBalanceAmount,
+        source_currency    => Currency,
+        target_currency    => :P_TarCurrency,
+        exchange_rate_date => :P_KeyDate,
+        exchange_rate_type => :P_EXRate
+        //error_handling => 'SET_TO_NULL'
+      )        as CalculatedCPBA,
+
+      Currency_conversion(
+        amount             => ComparisonPeriodBalanceAmount,
+        source_currency    => Currency,
+        target_currency    => :P_TarCurrency,
+        exchange_rate_date => :P_KeyDate,
+        exchange_rate_type => :P_EXRate
+        //error_handling => 'SET_TO_NULL'
+      )        as CalculatedPBA
+
+
+
+
+ 
+
+} 
