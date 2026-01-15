@@ -1,4 +1,15 @@
-@AbapCatalog.sqlViewName: 'ZCNR2RGLVM001'
+Description:
+This CDS view provides a comprehensive General Ledger-based Financial Statement for the Record-to-Report (R2R) process. It supports period and comparison period reporting, currency conversion, and hierarchical financial statement structures.
+Key features include:
+* Reporting of GL balances, profit centers, segments, and other financial dimensions
+* Support for custom key dates, fiscal periods, and fiscal years
+* Calculation of period-to-period differences (absolute and relative)
+* Currency conversion for reporting in target currencies
+* Parameterized for ledger, financial statement version, planning category, and user-specific filters
+* Optimized for SAP Embedded Analytics consumption@AbapCatalog.sqlViewName: 'ZCNR2RGLVM001'
+
+-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
 @AbapCatalog.compiler.compareFilter: true
 @AbapCatalog.preserveKey: true
 @VDM.viewType: #CONSUMPTION
